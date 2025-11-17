@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>House Construction Todo List</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: #0a1628;
+        background: radial-gradient(
+          circle at 50% 50%,
+          #1e3a8a 0%,
+          #0a1628 50%,
+          #050b14 100%
+        );
+        min-height: 100vh;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, sans-serif;
+        color: #e2e8f0;
+        position: relative;
+        overflow-x: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(
+            circle at 30% 40%,
+            rgba(59, 130, 246, 0.15) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 70% 60%,
+            rgba(37, 99, 235, 0.1) 0%,
+            transparent 50%
+          );
+        animation: pulse 15s ease-in-out infinite;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: translate(0, 0) scale(1);
+        }
+        50% {
+          transform: translate(-5%, -5%) scale(1.1);
+        }
+      }
+
+      .container {
+        max-width: 600px;
+        width: 94%;
+        margin: 0 auto;
+        overflow: scroll;
+        position: relative;
+        z-index: 1;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 2rem;
+        text-align: center;
+        letter-spacing: -0.02em;
+      }
+
+      /* Glass morphism styles */
+      .glass {
+        background: rgba(30, 58, 138, 0.2);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(96, 165, 250, 0.2);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37),
+          inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      }
+
+      .glass-input {
+        background: rgba(15, 23, 42, 0.5);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(96, 165, 250, 0.3);
+        color: #e2e8f0;
+        padding: 0.75rem 1rem;
+        border-radius: 0.75rem;
+        transition: all 0.3s ease;
+        outline: none;
+      }
+
+      .glass-input:focus {
+        border-color: rgba(96, 165, 250, 0.6);
+        box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1),
+          0 4px 16px rgba(59, 130, 246, 0.2);
+        background: rgba(15, 23, 42, 0.7);
+      }
+
+      .glass-input::placeholder {
+        color: rgba(226, 232, 240, 0.4);
+      }
+
+      .glass-button {
+        background: linear-gradient(
+          135deg,
+          rgba(59, 130, 246, 0.4) 0%,
+          rgba(37, 99, 235, 0.4) 100%
+        );
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(96, 165, 250, 0.4);
+        color: #e2e8f0;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.75rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 16px rgba(59, 130, 246, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .glass-button::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: left 0.5s ease;
+      }
+
+      .glass-button:hover::before {
+        left: 100%;
+      }
+
+      .glass-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 24px rgba(59, 130, 246, 0.4);
+        border-color: rgba(96, 165, 250, 0.6);
+      }
+
+      .glass-button:active {
+        transform: translateY(0);
+      }
+
+      .glass-button.green {
+        background: linear-gradient(
+          135deg,
+          rgba(34, 197, 94, 0.4) 0%,
+          rgba(22, 163, 74, 0.4) 100%
+        );
+        border-color: rgba(74, 222, 128, 0.4);
+      }
+
+      .glass-button.green:hover {
+        box-shadow: 0 6px 24px rgba(34, 197, 94, 0.4);
+        border-color: rgba(74, 222, 128, 0.6);
+      }
+
+      .glass-button.red {
+        background: linear-gradient(
+          135deg,
+          rgba(239, 68, 68, 0.4) 0%,
+          rgba(220, 38, 38, 0.4) 100%
+        );
+        border-color: rgba(248, 113, 113, 0.4);
+      }
+
+      .glass-button.red:hover {
+        box-shadow: 0 6px 24px rgba(239, 68, 68, 0.4);
+        border-color: rgba(248, 113, 113, 0.6);
+      }
+
+      .glass-table {
+        background: rgba(30, 58, 138, 0.15);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(96, 165, 250, 0.2);
+        border-radius: 1rem;
+        overflow: hidden;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      thead {
+        background: rgba(30, 58, 138, 0.3);
+        border-bottom: 1px solid rgba(96, 165, 250, 0.3);
+      }
+
+      th {
+        padding: 1rem;
+        text-align: left;
+        font-weight: 600;
+        color: #93c5fd;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.05em;
+      }
+
+      td {
+        padding: 1rem;
+        border-bottom: 1px solid rgba(96, 165, 250, 0.1);
+      }
+
+      tbody tr {
+        transition: background 0.2s ease;
+      }
+
+      tbody tr:hover {
+        background: rgba(59, 130, 246, 0.1);
+      }
+
+      tbody tr:last-child td {
+        border-bottom: none;
+      }
+
+      input[type="checkbox"] {
+        width: 1.25rem;
+        height: 1.25rem;
+        cursor: pointer;
+        accent-color: #3b82f6;
+      }
+
+      .form-container {
+        background: rgba(30, 58, 138, 0.2);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(96, 165, 250, 0.2);
+        border-radius: 1rem;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      }
+
+      .input-small {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+      }
+
+      /* Card styles */
+      .card-container {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .todo-card {
+        background: rgba(30, 58, 138, 0.2);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(96, 165, 250, 0.2);
+        border-radius: 1rem;
+        padding: 1rem;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+      }
+
+      .todo-card:hover {
+        border-color: rgba(96, 165, 250, 0.4);
+        box-shadow: 0 6px 24px rgba(59, 130, 246, 0.2);
+      }
+
+      .card-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        justify-content: space-between;
+      }
+
+      .card-left {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex: 1;
+        min-width: 0;
+      }
+
+      .card-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #e2e8f0;
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .card-checkboxes {
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+        flex-shrink: 0;
+      }
+
+      .checkbox-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.25rem;
+      }
+
+      .checkbox-label {
+        font-size: 0.625rem;
+        color: #93c5fd;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 600;
+      }
+
+      .card-actions {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        flex-shrink: 0;
+      }
+
+      .icon-button {
+        background: rgba(59, 130, 246, 0.2);
+        border: 1px solid rgba(96, 165, 250, 0.3);
+        border-radius: 0.5rem;
+        width: 2rem;
+        height: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        color: #93c5fd;
+        font-size: 0.875rem;
+        padding: 0;
+      }
+
+      .icon-button:hover {
+        background: rgba(59, 130, 246, 0.4);
+        border-color: rgba(96, 165, 250, 0.5);
+        transform: translateY(-2px);
+      }
+
+      .icon-button.delete {
+        background: rgba(239, 68, 68, 0.2);
+        border-color: rgba(248, 113, 113, 0.3);
+        color: #fca5a5;
+      }
+
+      .icon-button.delete:hover {
+        background: rgba(239, 68, 68, 0.4);
+        border-color: rgba(248, 113, 113, 0.5);
+      }
+
+      .icon-button.edit {
+        background: rgba(34, 197, 94, 0.2);
+        border-color: rgba(74, 222, 128, 0.3);
+        color: #86efac;
+      }
+
+      .icon-button.edit:hover {
+        background: rgba(34, 197, 94, 0.4);
+        border-color: rgba(74, 222, 128, 0.5);
+      }
+
+      /* Modal/Popup styles */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(8px);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+      }
+
+      .modal.active {
+        display: flex;
+      }
+
+      .modal-content {
+        background: rgba(15, 23, 42, 0.95);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(96, 165, 250, 0.3);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        max-width: 500px;
+        width: 100%;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+      }
+
+      .modal-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #93c5fd;
+      }
+
+      .close-button {
+        background: none;
+        border: none;
+        color: #93c5fd;
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 0;
+        width: 2rem;
+        height: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0.5rem;
+        transition: all 0.3s ease;
+      }
+
+      .close-button:hover {
+        background: rgba(59, 130, 246, 0.2);
+      }
+
+      .modal-field {
+        margin-bottom: 1rem;
+      }
+
+      .modal-label {
+        display: block;
+        font-size: 0.875rem;
+        color: #93c5fd;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+      }
+
+      .modal-buttons {
+        display: flex;
+        gap: 0.75rem;
+        margin-top: 1.5rem;
+      }
+
+      .modal-buttons .glass-button {
+        flex: 1;
+      }
+
+      /* Edit mode styles */
+      .card-edit-mode {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(96, 165, 250, 0.2);
+      }
+
+      .edit-field {
+        margin-bottom: 0.75rem;
+      }
+
+      .edit-label {
+        display: block;
+        font-size: 0.75rem;
+        color: #93c5fd;
+        margin-bottom: 0.25rem;
+        font-weight: 600;
+      }
+
+      .edit-actions {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1rem;
+      }
+
+      .edit-actions .glass-button {
+        flex: 1;
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container mx-auto py-8 px-4 max-w-7xl">
+      <h1>House Construction Todo List</h1>
+
+      <div class="form-container">
+        <form
+          action="/add"
+          method="POST"
+          style="display: flex; gap: 1rem; flex-wrap: wrap"
+        >
+          <input
+            name="name"
+            required
+            placeholder="Item name"
+            class="glass-input"
+            style="flex: 1; min-width: 200px"
+          />
+          <input
+            name="notes"
+            placeholder="Notes"
+            class="glass-input"
+            style="flex: 2; min-width: 300px"
+          />
+          <button class="glass-button" type="submit">Add Item</button>
+        </form>
+      </div>
+
+      <div class="card-container">
+        <% todos.forEach(todo => { %>
+        <div class="todo-card" id="card-<%= todo.id %>">
+          <div class="card-header">
+            <div class="card-left">
+              <div class="card-checkboxes">
+                <div class="checkbox-wrapper">
+                  <span class="checkbox-label">Buy</span>
+                  <input type="checkbox" <%= todo.is_purchased ? 'checked' : ''
+                  %> onchange="quickUpdate(<%= todo.id %>, 'is_purchased',
+                  this.checked)">
+                </div>
+                <div class="checkbox-wrapper">
+                  <span class="checkbox-label">Done</span>
+                  <input type="checkbox" <%= todo.is_installed ? 'checked' : ''
+                  %> onchange="quickUpdate(<%= todo.id %>, 'is_installed',
+                  this.checked)">
+                </div>
+              </div>
+              <span class="card-title"><%= todo.name %></span>
+            </div>
+            <div class="card-actions">
+              <button
+                class="icon-button"
+                onclick="toggleDetails(<%= todo.id %>)"
+                title="Details"
+              >
+                ⋯
+              </button>
+              <button
+                class="icon-button edit"
+                onclick="toggleEdit(<%= todo.id %>)"
+                title="Edit"
+              >
+                ✎
+              </button>
+              <form
+                action="/delete/<%= todo.id %>"
+                method="POST"
+                style="display: inline"
+                onsubmit="return confirm('Delete <%= todo.name %>?')"
+              >
+                <button type="submit" class="icon-button delete" title="Delete">
+                  🗑
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Edit Mode -->
+          <div
+            class="card-edit-mode"
+            id="edit-<%= todo.id %>"
+            style="display: none"
+          >
+            <form action="/update/<%= todo.id %>" method="POST">
+              <div class="edit-field">
+                <label class="edit-label">Name</label>
+                <input
+                  name="name"
+                  value="<%= todo.name %>"
+                  class="glass-input input-small"
+                  style="width: 100%"
+                  required
+                />
+              </div>
+              <div class="edit-field">
+                <label class="edit-label">Purchased On</label>
+                <input
+                  type="date"
+                  name="purchased_on"
+                  value="<%= todo.purchased_on || '' %>"
+                  class="glass-input input-small"
+                  style="width: 100%"
+                />
+              </div>
+              <div class="edit-field">
+                <label class="edit-label">Installed On</label>
+                <input
+                  type="date"
+                  name="installed_on"
+                  value="<%= todo.installed_on || '' %>"
+                  class="glass-input input-small"
+                  style="width: 100%"
+                />
+              </div>
+              <div class="edit-field">
+                <label class="edit-label">Notes</label>
+                <input
+                  name="notes"
+                  value="<%= todo.notes || '' %>"
+                  class="glass-input input-small"
+                  style="width: 100%"
+                />
+              </div>
+              <input
+                type="hidden"
+                name="is_purchased"
+                value="<%= todo.is_purchased ? '1' : '0' %>"
+              />
+              <input
+                type="hidden"
+                name="is_installed"
+                value="<%= todo.is_installed ? '1' : '0' %>"
+              />
+              <div class="edit-actions">
+                <button type="submit" class="glass-button green">
+                  Save Changes
+                </button>
+                <button
+                  type="button"
+                  class="glass-button"
+                  onclick="toggleEdit(<%= todo.id %>)"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <% }) %>
+      </div>
+    </div>
+
+    <!-- Details Modal -->
+    <div class="modal" id="detailsModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" id="modalTitle">Item Details</h2>
+          <button class="close-button" onclick="closeModal()">×</button>
+        </div>
+        <div id="modalBody"></div>
+      </div>
+    </div>
+
+    <script>
+      function toggleEdit(id) {
+        const editSection = document.getElementById(`edit-${id}`);
+        if (editSection.style.display === "none") {
+          editSection.style.display = "block";
+        } else {
+          editSection.style.display = "none";
+        }
+      }
+
+      function toggleDetails(id) {
+        const modal = document.getElementById("detailsModal");
+        const card = document.getElementById(`card-${id}`);
+
+        // Get todo data from the card
+        const name = card.querySelector(".card-title").textContent;
+        const isPurchased = card.querySelector(
+          'input[onchange*="is_purchased"]'
+        ).checked;
+        const isInstalled = card.querySelector(
+          'input[onchange*="is_installed"]'
+        ).checked;
+
+        // Get additional data from edit form
+        const editForm = document
+          .getElementById(`edit-${id}`)
+          .querySelector("form");
+        const purchasedOn = editForm.querySelector(
+          'input[name="purchased_on"]'
+        ).value;
+        const installedOn = editForm.querySelector(
+          'input[name="installed_on"]'
+        ).value;
+        const notes = editForm.querySelector('input[name="notes"]').value;
+
+        document.getElementById("modalTitle").textContent = name;
+        document.getElementById("modalBody").innerHTML = `
+        <div class="modal-field">
+          <span class="modal-label">Status</span>
+          <div style="display: flex; gap: 1rem; margin-top: 0.5rem;">
+            <span style="color: ${isPurchased ? "#86efac" : "#fca5a5"};">
+              ${isPurchased ? "✓" : "✗"} Purchased
+            </span>
+            <span style="color: ${isInstalled ? "#86efac" : "#fca5a5"};">
+              ${isInstalled ? "✓" : "✗"} Installed
+            </span>
+          </div>
+        </div>
+        ${
+          purchasedOn
+            ? `
+        <div class="modal-field">
+          <span class="modal-label">Purchased On</span>
+          <div style="color: #e2e8f0; margin-top: 0.5rem;">${new Date(
+            purchasedOn
+          ).toLocaleDateString()}</div>
+        </div>
+        `
+            : ""
+        }
+        ${
+          installedOn
+            ? `
+        <div class="modal-field">
+          <span class="modal-label">Installed On</span>
+          <div style="color: #e2e8f0; margin-top: 0.5rem;">${new Date(
+            installedOn
+          ).toLocaleDateString()}</div>
+        </div>
+        `
+            : ""
+        }
+        ${
+          notes
+            ? `
+        <div class="modal-field">
+          <span class="modal-label">Notes</span>
+          <div style="color: #e2e8f0; margin-top: 0.5rem;">${notes}</div>
+        </div>
+        `
+            : ""
+        }
+      `;
+
+        modal.classList.add("active");
+      }
+
+      function closeModal() {
+        document.getElementById("detailsModal").classList.remove("active");
+      }
+
+      // Close modal when clicking outside
+      document
+        .getElementById("detailsModal")
+        .addEventListener("click", function (e) {
+          if (e.target === this) {
+            closeModal();
+          }
+        });
+
+      function quickUpdate(id, field, value) {
+        // Create a form and submit it
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = `/update/${id}`;
+
+        // Get current values from edit form
+        const editForm = document
+          .getElementById(`edit-${id}`)
+          .querySelector("form");
+        const name = editForm.querySelector('input[name="name"]').value;
+        const purchasedOn = editForm.querySelector(
+          'input[name="purchased_on"]'
+        ).value;
+        const installedOn = editForm.querySelector(
+          'input[name="installed_on"]'
+        ).value;
+        const notes = editForm.querySelector('input[name="notes"]').value;
+        const isPurchased =
+          field === "is_purchased"
+            ? value
+            : editForm.querySelector('input[name="is_purchased"]').value ===
+              "1";
+        const isInstalled =
+          field === "is_installed"
+            ? value
+            : editForm.querySelector('input[name="is_installed"]').value ===
+              "1";
+
+        // Add all fields
+        const fields = {
+          name: name,
+          is_purchased: isPurchased ? "on" : "",
+          is_installed: isInstalled ? "on" : "",
+          purchased_on: purchasedOn,
+          installed_on: installedOn,
+          notes: notes,
+        };
+
+        for (const [key, val] of Object.entries(fields)) {
+          const input = document.createElement("input");
+          input.type = "hidden";
+          input.name = key;
+          input.value = val;
+          form.appendChild(input);
+        }
+
+        document.body.appendChild(form);
+        form.submit();
+      }
+    </script>
+  </body>
+</html>
