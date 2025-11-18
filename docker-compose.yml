@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  our-house:
+    build: .
+    container_name: our-house-app
+    restart: unless-stopped
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./db:/app/db
+    environment:
+      - NODE_ENV=production
+
