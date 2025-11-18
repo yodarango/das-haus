@@ -735,6 +735,88 @@
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
       }
 
+      /* Search/Filter styling */
+      .search-container {
+        max-width: 600px;
+        margin: 2rem auto 1.5rem;
+        padding: 0 1rem;
+      }
+
+      .search-wrapper {
+        position: relative;
+        width: 100%;
+      }
+
+      .search-input {
+        width: 100%;
+        background: rgba(15, 23, 42, 0.5);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(96, 165, 250, 0.3);
+        color: #e2e8f0;
+        padding: 0.875rem 1rem 0.875rem 3rem;
+        border-radius: 0.75rem;
+        transition: all 0.3s ease;
+        outline: none;
+        font-size: 0.9375rem;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      }
+
+      .search-input:focus {
+        border-color: rgba(96, 165, 250, 0.6);
+        box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15),
+          0 6px 24px rgba(59, 130, 246, 0.25);
+        background: rgba(15, 23, 42, 0.7);
+      }
+
+      .search-input::placeholder {
+        color: rgba(226, 232, 240, 0.4);
+      }
+
+      .search-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: rgba(96, 165, 250, 0.6);
+        font-size: 1.125rem;
+        pointer-events: none;
+      }
+
+      .clear-search {
+        position: absolute;
+        right: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(59, 130, 246, 0.2);
+        border: 1px solid rgba(96, 165, 250, 0.3);
+        color: rgba(226, 232, 240, 0.7);
+        width: 1.75rem;
+        height: 1.75rem;
+        border-radius: 0.5rem;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 1rem;
+        line-height: 1;
+      }
+
+      .clear-search:hover {
+        background: rgba(59, 130, 246, 0.3);
+        border-color: rgba(96, 165, 250, 0.5);
+        color: rgba(226, 232, 240, 0.9);
+      }
+
+      .clear-search.visible {
+        display: flex;
+      }
+
+      .todo-card.hidden {
+        display: none;
+      }
+
       /* Add button styling */
       .add-button {
         position: fixed;
@@ -841,6 +923,23 @@
             <span class="progress-percentage"><%= progressPercentage %>%</span>
             <% } %>
           </div>
+        </div>
+      </div>
+
+      <!-- Search/Filter Input -->
+      <div class="search-container">
+        <div class="search-wrapper">
+          <span class="search-icon">🔍</span>
+          <input
+            type="text"
+            id="taskSearch"
+            class="search-input"
+            placeholder="Search tasks..."
+            oninput="filterTasks()"
+          />
+          <button class="clear-search" id="clearSearch" onclick="clearSearch()">
+            ✕
+          </button>
         </div>
       </div>
 
@@ -1243,6 +1342,51 @@
         if (event.target.id === "addModal") {
           toggleAddModal();
         }
+      }
+
+      // Filter tasks based on search input
+      function filterTasks() {
+        const searchInput = document.getElementById("taskSearch");
+        const clearButton = document.getElementById("clearSearch");
+        const searchTerm = searchInput.value.toLowerCase().trim();
+        const cards = document.querySelectorAll(".todo-card");
+
+        // Show/hide clear button
+        if (searchTerm.length > 0) {
+          clearButton.classList.add("visible");
+        } else {
+          clearButton.classList.remove("visible");
+        }
+
+        // Filter cards
+        cards.forEach((card) => {
+          const title = card.querySelector(".card-title").textContent.toLowerCase();
+          const notesElement = card.querySelector(".card-notes");
+          const notes = notesElement ? notesElement.textContent.toLowerCase() : "";
+
+          if (title.includes(searchTerm) || notes.includes(searchTerm)) {
+            card.classList.remove("hidden");
+          } else {
+            card.classList.add("hidden");
+          }
+        });
+      }
+
+      // Clear search input and show all tasks
+      function clearSearch() {
+        const searchInput = document.getElementById("taskSearch");
+        const clearButton = document.getElementById("clearSearch");
+        searchInput.value = "";
+        clearButton.classList.remove("visible");
+
+        // Show all cards
+        const cards = document.querySelectorAll(".todo-card");
+        cards.forEach((card) => {
+          card.classList.remove("hidden");
+        });
+
+        // Focus back on search input
+        searchInput.focus();
       }
     </script>
   </body>
