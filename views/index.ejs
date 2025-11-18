@@ -66,6 +66,7 @@
         overflow: scroll;
         position: relative;
         z-index: 1;
+        padding: 16px 0;
       }
 
       h1 {
@@ -239,10 +240,52 @@
       }
 
       input[type="checkbox"] {
-        width: 1.25rem;
-        height: 1.25rem;
+        appearance: none;
+        -webkit-appearance: none;
+        width: 1.5rem;
+        height: 1.5rem;
         cursor: pointer;
-        accent-color: #3b82f6;
+        background: rgba(15, 23, 42, 0.5);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 2px solid rgba(96, 165, 250, 0.3);
+        border-radius: 0.375rem;
+        position: relative;
+        transition: all 0.3s ease;
+        outline: none;
+      }
+
+      input[type="checkbox"]:hover {
+        border-color: rgba(96, 165, 250, 0.5);
+        background: rgba(15, 23, 42, 0.7);
+        box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
+      }
+
+      input[type="checkbox"]:checked {
+        background: linear-gradient(
+          135deg,
+          rgba(59, 130, 246, 0.6) 0%,
+          rgba(37, 99, 235, 0.6) 100%
+        );
+        border-color: rgba(96, 165, 250, 0.6);
+        box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15),
+          0 4px 12px rgba(59, 130, 246, 0.3);
+      }
+
+      input[type="checkbox"]:checked::after {
+        content: "✓";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #ffffff;
+        font-size: 1rem;
+        font-weight: bold;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+      }
+
+      input[type="checkbox"]:active {
+        transform: scale(0.95);
       }
 
       .form-container {
@@ -284,6 +327,17 @@
         box-shadow: 0 6px 24px rgba(59, 130, 246, 0.2);
       }
 
+      .todo-card.completed {
+        background: rgba(34, 197, 94, 0.2);
+        border-color: rgba(74, 222, 128, 0.3);
+        box-shadow: 0 4px 16px rgba(34, 197, 94, 0.2);
+      }
+
+      .todo-card.completed:hover {
+        border-color: rgba(74, 222, 128, 0.5);
+        box-shadow: 0 6px 24px rgba(34, 197, 94, 0.3);
+      }
+
       .card-header {
         display: flex;
         align-items: center;
@@ -305,6 +359,16 @@
         color: #e2e8f0;
         flex: 1;
         min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .card-notes {
+        font-size: 0.875rem;
+        color: rgba(226, 232, 240, 0.75);
+        padding: 0.75rem 1rem 0 1rem;
+        width: 100%;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -501,38 +565,146 @@
         padding: 0.5rem 1rem;
         font-size: 0.875rem;
       }
+
+      /* Logo styling */
+      .logo-container {
+        display: flex;
+        justify-content: center;
+        margin: 2rem 0;
+      }
+
+      .logo-container img {
+        max-width: 200px;
+        height: auto;
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      }
+
+      /* Add button styling */
+      .add-button {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        border: 2px solid rgba(96, 165, 250, 0.3);
+        color: white;
+        font-size: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
+        transition: all 0.3s ease;
+        z-index: 100;
+      }
+
+      .add-button:hover {
+        transform: scale(1.1);
+        box-shadow: 0 12px 32px rgba(59, 130, 246, 0.6);
+        border-color: rgba(96, 165, 250, 0.5);
+      }
+
+      /* Modal styling */
+      .modal-backdrop {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(15, 23, 42, 0.85);
+        backdrop-filter: blur(8px);
+        z-index: 200;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal-backdrop.active {
+        display: flex;
+      }
+
+      .modal-content {
+        background: rgba(30, 41, 59, 0.95);
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        border-radius: 16px;
+        padding: 2rem;
+        max-width: 500px;
+        width: 90%;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(20px);
+      }
+
+      .modal-header {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #e2e8f0;
+        margin-bottom: 1.5rem;
+        text-align: center;
+      }
+
+      .modal-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .modal-form .glass-input {
+        width: 100%;
+      }
+
+      .modal-form .glass-button {
+        width: 100%;
+      }
     </style>
   </head>
   <body>
     <div class="container mx-auto py-8 px-4 max-w-7xl">
       <h1>House Construction Todo List</h1>
 
-      <div class="form-container">
-        <form
-          action="/add"
-          method="POST"
-          style="display: flex; gap: 1rem; flex-wrap: wrap"
-        >
-          <input
-            name="name"
-            required
-            placeholder="Item name"
-            class="glass-input"
-            style="flex: 1; min-width: 200px"
-          />
-          <input
-            name="notes"
-            placeholder="Notes"
-            class="glass-input"
-            style="flex: 2; min-width: 300px"
-          />
-          <button class="glass-button" type="submit">Add Item</button>
-        </form>
+      <!-- Logo -->
+      <div class="logo-container">
+        <img src="/das_haus.webp" alt="Das Haus Logo" />
+      </div>
+
+      <!-- Add Button -->
+      <button
+        class="add-button"
+        onclick="toggleAddModal()"
+        title="Add New Item"
+      >
+        +
+      </button>
+
+      <!-- Add Item Modal -->
+      <div
+        class="modal-backdrop"
+        id="addModal"
+        onclick="closeModalOnBackdrop(event)"
+      >
+        <div class="modal-content">
+          <div class="modal-header">Add New Item</div>
+          <form action="/add" method="POST" class="modal-form">
+            <input
+              name="name"
+              required
+              placeholder="Item name"
+              class="glass-input"
+            />
+            <input name="notes" placeholder="Notes" class="glass-input" />
+            <button class="glass-button" type="submit">Add Item</button>
+          </form>
+        </div>
       </div>
 
       <div class="card-container">
         <% todos.forEach(todo => { %>
-        <div class="todo-card" id="card-<%= todo.id %>">
+        <div
+          class="todo-card <%= (todo.is_purchased && todo.is_installed) ? 'completed' : '' %>"
+          id="card-<%= todo.id %>"
+        >
           <div class="card-header">
             <div class="card-left">
               <div class="card-checkboxes">
@@ -579,13 +751,22 @@
             </div>
           </div>
 
+          <!-- Notes Display -->
+          <% if (todo.notes && todo.notes.trim() !== '') { %>
+          <div class="card-notes"><%= todo.notes %></div>
+          <% } %>
+
           <!-- Edit Mode -->
           <div
             class="card-edit-mode"
             id="edit-<%= todo.id %>"
             style="display: none"
           >
-            <form action="/update/<%= todo.id %>" method="POST">
+            <form
+              action="/update/<%= todo.id %>"
+              method="POST"
+              onsubmit="return validateDates(this)"
+            >
               <div class="edit-field">
                 <label class="edit-label">Name</label>
                 <input
@@ -597,23 +778,27 @@
                 />
               </div>
               <div class="edit-field">
-                <label class="edit-label">Purchased On</label>
+                <label class="edit-label">Purchased On (MM/DD/YY)</label>
                 <input
-                  type="date"
+                  type="text"
                   name="purchased_on"
-                  value="<%= todo.purchased_on || '' %>"
+                  value="<%= todo.purchased_on_display || '' %>"
                   class="glass-input input-small"
                   style="width: 100%"
+                  placeholder="MM/DD/YY"
+                  pattern="\d{1,2}/\d{1,2}/\d{2}"
                 />
               </div>
               <div class="edit-field">
-                <label class="edit-label">Installed On</label>
+                <label class="edit-label">Installed On (MM/DD/YY)</label>
                 <input
-                  type="date"
+                  type="text"
                   name="installed_on"
-                  value="<%= todo.installed_on || '' %>"
+                  value="<%= todo.installed_on_display || '' %>"
                   class="glass-input input-small"
                   style="width: 100%"
+                  placeholder="MM/DD/YY"
+                  pattern="\d{1,2}/\d{1,2}/\d{2}"
                 />
               </div>
               <div class="edit-field">
@@ -625,26 +810,16 @@
                   style="width: 100%"
                 />
               </div>
-              <input
-                type="hidden"
-                name="is_purchased"
-                value="<%= todo.is_purchased ? '1' : '0' %>"
-              />
-              <input
-                type="hidden"
-                name="is_installed"
-                value="<%= todo.is_installed ? '1' : '0' %>"
-              />
               <div class="edit-actions">
-                <button type="submit" class="glass-button green">
-                  Save Changes
-                </button>
                 <button
                   type="button"
                   class="glass-button"
                   onclick="toggleEdit(<%= todo.id %>)"
                 >
                   Cancel
+                </button>
+                <button type="submit" class="glass-button green">
+                  Save Changes
                 </button>
               </div>
             </form>
@@ -666,6 +841,55 @@
     </div>
 
     <script>
+      function validateDates(form) {
+        const purchasedOn = form.querySelector(
+          'input[name="purchased_on"]'
+        ).value;
+        const installedOn = form.querySelector(
+          'input[name="installed_on"]'
+        ).value;
+
+        const datePattern = /^(\d{1,2})\/(\d{1,2})\/(\d{2})$/;
+
+        if (purchasedOn && purchasedOn.trim() !== "") {
+          const match = purchasedOn.match(datePattern);
+          if (!match) {
+            alert(
+              "Invalid purchased date format. Please use MM/DD/YY (e.g., 12/25/24)"
+            );
+            return false;
+          }
+          const month = parseInt(match[1], 10);
+          const day = parseInt(match[2], 10);
+          if (month < 1 || month > 12 || day < 1 || day > 31) {
+            alert(
+              "Invalid purchased date. Month must be 1-12 and day must be 1-31."
+            );
+            return false;
+          }
+        }
+
+        if (installedOn && installedOn.trim() !== "") {
+          const match = installedOn.match(datePattern);
+          if (!match) {
+            alert(
+              "Invalid installed date format. Please use MM/DD/YY (e.g., 12/25/24)"
+            );
+            return false;
+          }
+          const month = parseInt(match[1], 10);
+          const day = parseInt(match[2], 10);
+          if (month < 1 || month > 12 || day < 1 || day > 31) {
+            alert(
+              "Invalid installed date. Month must be 1-12 and day must be 1-31."
+            );
+            return false;
+          }
+        }
+
+        return true;
+      }
+
       function toggleEdit(id) {
         const editSection = document.getElementById(`edit-${id}`);
         if (editSection.style.display === "none") {
@@ -794,6 +1018,14 @@
             : editForm.querySelector('input[name="is_installed"]').value ===
               "1";
 
+        // Update the card's completed class before submitting
+        const card = document.getElementById(`card-${id}`);
+        if (isPurchased && isInstalled) {
+          card.classList.add("completed");
+        } else {
+          card.classList.remove("completed");
+        }
+
         // Add all fields
         const fields = {
           name: name,
@@ -814,6 +1046,19 @@
 
         document.body.appendChild(form);
         form.submit();
+      }
+
+      // Toggle add modal
+      function toggleAddModal() {
+        const modal = document.getElementById("addModal");
+        modal.classList.toggle("active");
+      }
+
+      // Close modal when clicking on backdrop
+      function closeModalOnBackdrop(event) {
+        if (event.target.id === "addModal") {
+          toggleAddModal();
+        }
       }
     </script>
   </body>
