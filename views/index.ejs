@@ -3,7 +3,50 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>House Construction Todo List</title>
+
+    <!-- Primary Meta Tags -->
+    <title>The Rangels - Building Our Dream Home</title>
+    <meta name="title" content="The Rangels - Building Our Dream Home" />
+    <meta name="description" content="We're building our dream home together. Follow our construction journey as we track progress, purchases, and installations for our new house." />
+    <meta name="keywords" content="house construction, home building, construction tracker, The Rangels, dream home, house renovation" />
+    <meta name="author" content="The Rangels" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://therangels.com/" />
+    <meta property="og:title" content="The Rangels - Building Our Dream Home" />
+    <meta property="og:description" content="We're building our dream home together. Follow our construction journey as we track progress, purchases, and installations for our new house." />
+    <meta property="og:image" content="/das_haus.webp" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://therangels.com/" />
+    <meta property="twitter:title" content="The Rangels - Building Our Dream Home" />
+    <meta property="twitter:description" content="We're building our dream home together. Follow our construction journey as we track progress, purchases, and installations for our new house." />
+    <meta property="twitter:image" content="/das_haus.webp" />
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#1e3a8a" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="The Rangels" />
+
+    <!-- iOS Splash Screens -->
+    <link rel="apple-touch-startup-image" href="/icons/icon-512x512.png" />
+
+    <!-- Additional SEO -->
+    <meta name="robots" content="index, follow" />
+    <meta name="language" content="English" />
+    <meta name="revisit-after" content="7 days" />
+    <link rel="canonical" href="https://therangels.com/" />
     <style>
       * {
         margin: 0;
@@ -72,7 +115,7 @@
       h1 {
         font-size: 2.5rem;
         font-weight: 700;
-        background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+        background: linear-gradient(135deg, #deecff 0%, #dbceff 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -369,9 +412,66 @@
         color: rgba(226, 232, 240, 0.75);
         padding: 0.75rem 1rem 0 1rem;
         width: 100%;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+        line-height: 1.5;
+      }
+
+      /* Markdown styling in notes */
+      .card-notes p {
+        margin: 0.25rem 0;
+      }
+
+      .card-notes strong {
+        color: rgba(226, 232, 240, 0.9);
+        font-weight: 600;
+      }
+
+      .card-notes em {
+        font-style: italic;
+      }
+
+      .card-notes code {
+        background: rgba(15, 23, 42, 0.5);
+        padding: 0.125rem 0.25rem;
+        border-radius: 4px;
+        font-family: monospace;
+        font-size: 0.8rem;
+      }
+
+      .card-notes a {
+        color: #60a5fa;
+        text-decoration: none;
+      }
+
+      .card-notes a:hover {
+        text-decoration: underline;
+      }
+
+      .card-notes ul,
+      .card-notes ol {
+        margin: 0.25rem 0;
+        padding-left: 1.5rem;
+      }
+
+      .card-notes li {
+        margin: 0.125rem 0;
+      }
+
+      .card-notes h1,
+      .card-notes h2,
+      .card-notes h3,
+      .card-notes h4,
+      .card-notes h5,
+      .card-notes h6 {
+        color: rgba(226, 232, 240, 0.9);
+        margin: 0.5rem 0 0.25rem 0;
+        font-weight: 600;
+      }
+
+      .card-notes blockquote {
+        border-left: 3px solid rgba(96, 165, 250, 0.5);
+        padding-left: 0.75rem;
+        margin: 0.5rem 0;
+        color: rgba(226, 232, 240, 0.65);
       }
 
       .card-checkboxes {
@@ -580,6 +680,61 @@
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
       }
 
+      /* Progress bar styling */
+      .progress-container {
+        max-width: 600px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
+
+      .progress-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.75rem;
+      }
+
+      .progress-label {
+        font-size: 0.875rem;
+        color: rgba(226, 232, 240, 0.9);
+        font-weight: 600;
+      }
+
+      .progress-stats {
+        font-size: 0.875rem;
+        color: rgba(226, 232, 240, 0.75);
+      }
+
+      .progress-bar-wrapper {
+        width: 100%;
+        height: 24px;
+        background: rgba(30, 41, 59, 0.6);
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        border-radius: 12px;
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+        box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
+      }
+
+      .progress-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #3b82f6 0%, #60a5fa 100%);
+        border-radius: 12px;
+        transition: width 0.5s ease;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding-right: 0.75rem;
+        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+      }
+
+      .progress-percentage {
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: white;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+      }
+
       /* Add button styling */
       .add-button {
         position: fixed;
@@ -662,11 +817,31 @@
   </head>
   <body>
     <div class="container mx-auto py-8 px-4 max-w-7xl">
-      <h1>House Construction Todo List</h1>
+      <h1>The Rangels</h1>
 
       <!-- Logo -->
       <div class="logo-container">
         <img src="/das_haus.webp" alt="Das Haus Logo" />
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="progress-container">
+        <div class="progress-header">
+          <span class="progress-label">Construction Progress</span>
+          <span class="progress-stats"
+            ><%= completedItems %> of <%= totalItems %> completed</span
+          >
+        </div>
+        <div class="progress-bar-wrapper">
+          <div
+            class="progress-bar-fill"
+            style="width: <%= progressPercentage %>%"
+          >
+            <% if (progressPercentage > 15) { %>
+            <span class="progress-percentage"><%= progressPercentage %>%</span>
+            <% } %>
+          </div>
+        </div>
       </div>
 
       <!-- Add Button -->
@@ -693,7 +868,7 @@
               placeholder="Item name"
               class="glass-input"
             />
-            <input name="notes" placeholder="Notes" class="glass-input" />
+            <input name="notes" placeholder="Notes (Markdown supported)" class="glass-input" />
             <button class="glass-button" type="submit">Add Item</button>
           </form>
         </div>
@@ -704,6 +879,7 @@
         <div
           class="todo-card <%= (todo.is_purchased && todo.is_installed) ? 'completed' : '' %>"
           id="card-<%= todo.id %>"
+          data-notes-html="<%= todo.notes_html.replace(/"/g, '&quot;') %>"
         >
           <div class="card-header">
             <div class="card-left">
@@ -753,7 +929,7 @@
 
           <!-- Notes Display -->
           <% if (todo.notes && todo.notes.trim() !== '') { %>
-          <div class="card-notes"><%= todo.notes %></div>
+          <div class="card-notes"><%- todo.notes_html %></div>
           <% } %>
 
           <!-- Edit Mode -->
@@ -802,12 +978,13 @@
                 />
               </div>
               <div class="edit-field">
-                <label class="edit-label">Notes</label>
+                <label class="edit-label">Notes (Markdown supported)</label>
                 <input
                   name="notes"
                   value="<%= todo.notes || '' %>"
                   class="glass-input input-small"
                   style="width: 100%"
+                  placeholder="**bold** *italic* [link](url)"
                 />
               </div>
               <div class="edit-actions">
@@ -924,6 +1101,9 @@
         ).value;
         const notes = editForm.querySelector('input[name="notes"]').value;
 
+        // Get rendered markdown HTML from card data attribute
+        const notesHtml = card.getAttribute('data-notes-html') || '';
+
         document.getElementById("modalTitle").textContent = name;
         document.getElementById("modalBody").innerHTML = `
         <div class="modal-field">
@@ -962,11 +1142,11 @@
             : ""
         }
         ${
-          notes
+          notesHtml
             ? `
         <div class="modal-field">
           <span class="modal-label">Notes</span>
-          <div style="color: #e2e8f0; margin-top: 0.5rem;">${notes}</div>
+          <div style="color: #e2e8f0; margin-top: 0.5rem; line-height: 1.5;">${notesHtml}</div>
         </div>
         `
             : ""
@@ -1059,6 +1239,20 @@
         if (event.target.id === "addModal") {
           toggleAddModal();
         }
+      }
+
+      // Register Service Worker for PWA
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker
+            .register("/service-worker.js")
+            .then((registration) => {
+              console.log("Service Worker registered:", registration);
+            })
+            .catch((error) => {
+              console.log("Service Worker registration failed:", error);
+            });
+        });
       }
     </script>
   </body>

@@ -3,6 +3,13 @@ const path = require("path");
 const db = require("./db/init");
 const bodyParser = require("body-parser");
 
+// Import marked dynamically
+let marked;
+(async () => {
+  const markedModule = await import("marked");
+  marked = markedModule.marked;
+})();
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -62,14 +69,28 @@ app.get("/", (req, res) => {
   db.all("SELECT * FROM todos", [], (err, rows) => {
     if (err) return res.status(500).send("DB error");
 
-    // Format dates for display
+    // Format dates and parse markdown for display
     const todosWithFormattedDates = rows.map((todo) => ({
       ...todo,
       purchased_on_display: formatDateForDisplay(todo.purchased_on),
       installed_on_display: formatDateForDisplay(todo.installed_on),
+      notes_html: todo.notes ? marked(todo.notes) : "",
     }));
 
-    res.render("index", { todos: todosWithFormattedDates });
+    // Calculate progress
+    const totalItems = rows.length;
+    const completedItems = rows.filter(
+      (todo) => todo.is_purchased && todo.is_installed
+    ).length;
+    const progressPercentage =
+      totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
+
+    res.render("index", {
+      todos: todosWithFormattedDates,
+      totalItems,
+      completedItems,
+      progressPercentage,
+    });
   });
 });
 
