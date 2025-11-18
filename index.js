@@ -109,7 +109,14 @@ app.post("/add", (req, res) => {
 // Update todo
 app.post("/update/:id", (req, res) => {
   const { id } = req.params;
-  const { name, purchased_on, installed_on, notes } = req.body;
+  const {
+    name,
+    purchased_on,
+    installed_on,
+    notes,
+    is_purchased,
+    is_installed,
+  } = req.body;
 
   // Parse and validate dates
   const parsedPurchasedOn = parseDate(purchased_on);
@@ -123,10 +130,22 @@ app.post("/update/:id", (req, res) => {
     return res.status(400).send("Invalid installed date format. Use MM/DD/YY");
   }
 
-  // Only update name, dates, and notes - NOT the checkboxes
+  // Convert checkbox values to boolean (checkboxes send "on" when checked, undefined when unchecked)
+  const isPurchased = is_purchased === "on" ? 1 : 0;
+  const isInstalled = is_installed === "on" ? 1 : 0;
+
+  // Update all fields including checkboxes
   db.run(
-    `UPDATE todos SET name=?, purchased_on=?, installed_on=?, notes=? WHERE id=?`,
-    [name, parsedPurchasedOn, parsedInstalledOn, notes, id],
+    `UPDATE todos SET name=?, purchased_on=?, installed_on=?, notes=?, is_purchased=?, is_installed=? WHERE id=?`,
+    [
+      name,
+      parsedPurchasedOn,
+      parsedInstalledOn,
+      notes,
+      isPurchased,
+      isInstalled,
+      id,
+    ],
     (err) => {
       if (err) {
         console.error("Database error:", err);

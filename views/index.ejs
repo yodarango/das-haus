@@ -1278,6 +1278,9 @@
         form.method = "POST";
         form.action = `/update/${id}`;
 
+        // Get the card element
+        const card = document.getElementById(`card-${id}`);
+
         // Get current values from edit form
         const editForm = document
           .getElementById(`edit-${id}`)
@@ -1290,19 +1293,15 @@
           'input[name="installed_on"]'
         ).value;
         const notes = editForm.querySelector('textarea[name="notes"]').value;
-        const isPurchased =
-          field === "is_purchased"
-            ? value
-            : editForm.querySelector('input[name="is_purchased"]').value ===
-              "1";
-        const isInstalled =
-          field === "is_installed"
-            ? value
-            : editForm.querySelector('input[name="is_installed"]').value ===
-              "1";
+
+        // Get checkbox values from the visible checkboxes in the card header
+        const purchasedCheckbox = card.querySelector('input[onchange*="is_purchased"]');
+        const installedCheckbox = card.querySelector('input[onchange*="is_installed"]');
+
+        const isPurchased = field === "is_purchased" ? value : purchasedCheckbox.checked;
+        const isInstalled = field === "is_installed" ? value : installedCheckbox.checked;
 
         // Update the card's completed class before submitting
-        const card = document.getElementById(`card-${id}`);
         if (isPurchased && isInstalled) {
           card.classList.add("completed");
         } else {
