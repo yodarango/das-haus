@@ -19,7 +19,7 @@ git add .
 git commit -m "$COMMIT_MESSAGE"
 
 # Push changes to the Git repository
-git push
+git push --force
 
 # Check if the push was successful
 if [ $? -eq 0 ]; then
