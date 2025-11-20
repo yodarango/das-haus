@@ -66,32 +66,36 @@ function formatDateForDisplay(dateStr) {
 
 // List all todos
 app.get("/", (req, res) => {
-  db.all("SELECT * FROM todos", [], (err, rows) => {
-    if (err) return res.status(500).send("DB error");
+  db.all(
+    "SELECT * FROM todos ORDER BY name COLLATE NOCASE ASC",
+    [],
+    (err, rows) => {
+      if (err) return res.status(500).send("DB error");
 
-    // Format dates and parse markdown for display
-    const todosWithFormattedDates = rows.map((todo) => ({
-      ...todo,
-      purchased_on_display: formatDateForDisplay(todo.purchased_on),
-      installed_on_display: formatDateForDisplay(todo.installed_on),
-      notes_html: todo.notes ? marked(todo.notes) : "",
-    }));
+      // Format dates and parse markdown for display
+      const todosWithFormattedDates = rows.map((todo) => ({
+        ...todo,
+        purchased_on_display: formatDateForDisplay(todo.purchased_on),
+        installed_on_display: formatDateForDisplay(todo.installed_on),
+        notes_html: todo.notes ? marked(todo.notes) : "",
+      }));
 
-    // Calculate progress
-    const totalItems = rows.length;
-    const completedItems = rows.filter(
-      (todo) => todo.is_purchased && todo.is_installed
-    ).length;
-    const progressPercentage =
-      totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
+      // Calculate progress
+      const totalItems = rows.length;
+      const completedItems = rows.filter(
+        (todo) => todo.is_purchased && todo.is_installed
+      ).length;
+      const progressPercentage =
+        totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
 
-    res.render("index", {
-      todos: todosWithFormattedDates,
-      totalItems,
-      completedItems,
-      progressPercentage,
-    });
-  });
+      res.render("index", {
+        todos: todosWithFormattedDates,
+        totalItems,
+        completedItems,
+        progressPercentage,
+      });
+    }
+  );
 });
 
 // Create todo
@@ -149,9 +153,10 @@ app.post("/update/:id", (req, res) => {
     (err) => {
       if (err) {
         console.error("Database error:", err);
-        return res.status(500).send("Database error");
+        return res.status(500).json({ error: "Database error" });
       }
-      res.redirect("/");
+      // Return JSON success response instead of redirecting
+      res.json({ success: true });
     }
   );
 });
