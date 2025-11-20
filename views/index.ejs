@@ -1045,8 +1045,12 @@
             <form
               action="/update/<%= todo.id %>"
               method="POST"
-              onsubmit="return validateDates(this)"
+              onsubmit="return handleEditSubmit(event, <%= todo.id %>)"
             >
+              <!-- Hidden inputs for checkbox values -->
+              <input type="hidden" name="is_purchased" value="<%= todo.is_purchased ? '1' : '0' %>">
+              <input type="hidden" name="is_installed" value="<%= todo.is_installed ? '1' : '0' %>">
+
               <div class="edit-field">
                 <label class="edit-label">Name</label>
                 <input
@@ -1296,6 +1300,10 @@
         const isPurchased = field === "is_purchased" ? value : purchasedCheckbox.checked;
         const isInstalled = field === "is_installed" ? value : installedCheckbox.checked;
 
+        // Update hidden inputs in edit form to keep them in sync
+        editForm.querySelector('input[name="is_purchased"]').value = isPurchased ? '1' : '0';
+        editForm.querySelector('input[name="is_installed"]').value = isInstalled ? '1' : '0';
+
         // Update the card's completed class immediately for better UX
         if (isPurchased && isInstalled) {
           card.classList.add("completed");
@@ -1334,6 +1342,53 @@
           }
           alert('Failed to update task. Please try again.');
         }
+      }
+
+      // Handle edit form submission with AJAX
+      async function handleEditSubmit(event, id) {
+        event.preventDefault();
+
+        const form = event.target;
+        const formData = new FormData(form);
+
+        // Validate dates first
+        if (!validateDates(form)) {
+          return false;
+        }
+
+        // Convert checkbox hidden inputs to proper format
+        const isPurchased = formData.get('is_purchased') === '1';
+        const isInstalled = formData.get('is_installed') === '1';
+
+        const urlEncodedData = new URLSearchParams();
+        urlEncodedData.append('name', formData.get('name'));
+        urlEncodedData.append('purchased_on', formData.get('purchased_on'));
+        urlEncodedData.append('installed_on', formData.get('installed_on'));
+        urlEncodedData.append('notes', formData.get('notes'));
+        urlEncodedData.append('is_purchased', isPurchased ? 'on' : '');
+        urlEncodedData.append('is_installed', isInstalled ? 'on' : '');
+
+        try {
+          const response = await fetch(`/update/${id}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: urlEncodedData.toString()
+          });
+
+          if (!response.ok) {
+            throw new Error('Update failed');
+          }
+
+          // Reload the page to show updated content (markdown rendering, etc.)
+          window.location.reload();
+        } catch (error) {
+          console.error('Error updating task:', error);
+          alert('Failed to update task. Please try again.');
+        }
+
+        return false;
       }
 
       // Toggle add modal
