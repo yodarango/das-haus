@@ -9,7 +9,8 @@ db.serialize(() => {
     is_installed INTEGER DEFAULT 0,
     purchased_on TEXT,
     installed_on TEXT,
-    notes TEXT
+    notes TEXT,
+    cost REAL DEFAULT 0
   )`);
 });
 

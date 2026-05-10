@@ -926,6 +926,16 @@
         </div>
       </div>
 
+      <!-- Total Cost Display -->
+      <div class="progress-container">
+        <div class="progress-header">
+          <span class="progress-label">Total Cost (Items Not Purchased)</span>
+          <span class="progress-stats" style="font-size: 1.125rem; font-weight: 700; color: #86efac;">
+            $<%= totalCostNotPurchased.toFixed(2) %>
+          </span>
+        </div>
+      </div>
+
       <!-- Search/Filter Input -->
       <div class="search-container">
         <div class="search-wrapper">
@@ -967,6 +977,15 @@
               placeholder="Item name"
               class="glass-input"
             />
+            <input
+              type="number"
+              name="cost"
+              placeholder="Cost ($)"
+              class="glass-input"
+              step="0.01"
+              min="0"
+              value="0"
+            />
             <textarea
               name="notes"
               placeholder="Notes (Markdown supported)"
@@ -1002,6 +1021,11 @@
                 </div>
               </div>
               <span class="card-title"><%= todo.name %></span>
+            </div>
+            <div class="card-left" style="flex: 0 0 auto; min-width: 80px; justify-content: flex-end;">
+              <span style="font-size: 0.875rem; font-weight: 600; color: #86efac;">
+                $<%= (todo.cost || 0).toFixed(2) %>
+              </span>
             </div>
             <div class="card-actions">
               <button
@@ -1083,6 +1107,19 @@
                   style="width: 100%"
                   placeholder="MM/DD/YY"
                   pattern="\d{1,2}/\d{1,2}/\d{2}"
+                />
+              </div>
+              <div class="edit-field">
+                <label class="edit-label">Cost ($)</label>
+                <input
+                  type="number"
+                  name="cost"
+                  value="<%= todo.cost || 0 %>"
+                  class="glass-input input-small"
+                  style="width: 100%"
+                  step="0.01"
+                  min="0"
+                  placeholder="0.00"
                 />
               </div>
               <div class="edit-field">
@@ -1207,12 +1244,19 @@
           'input[name="installed_on"]'
         ).value;
         const notes = editForm.querySelector('textarea[name="notes"]').value;
+        const cost = editForm.querySelector('input[name="cost"]').value;
 
         // Get rendered markdown HTML from card data attribute
         const notesHtml = card.getAttribute('data-notes-html') || '';
 
         document.getElementById("modalTitle").textContent = name;
         document.getElementById("modalBody").innerHTML = `
+        <div class="modal-field">
+          <span class="modal-label">Cost</span>
+          <div style="color: #86efac; margin-top: 0.5rem; font-size: 1.25rem; font-weight: 700;">
+            $${parseFloat(cost || 0).toFixed(2)}
+          </div>
+        </div>
         <div class="modal-field">
           <span class="modal-label">Status</span>
           <div style="display: flex; gap: 1rem; margin-top: 0.5rem;">
@@ -1292,6 +1336,7 @@
           'input[name="installed_on"]'
         ).value;
         const notes = editForm.querySelector('textarea[name="notes"]').value;
+        const cost = editForm.querySelector('input[name="cost"]').value;
 
         // Get checkbox values from the visible checkboxes in the card header
         const purchasedCheckbox = card.querySelector('input[onchange*="is_purchased"]');
@@ -1319,6 +1364,7 @@
         formData.append('purchased_on', purchasedOn);
         formData.append('installed_on', installedOn);
         formData.append('notes', notes);
+        formData.append('cost', cost);
 
         try {
           const response = await fetch(`/update/${id}`, {
@@ -1365,6 +1411,7 @@
         urlEncodedData.append('purchased_on', formData.get('purchased_on'));
         urlEncodedData.append('installed_on', formData.get('installed_on'));
         urlEncodedData.append('notes', formData.get('notes'));
+        urlEncodedData.append('cost', formData.get('cost'));
         urlEncodedData.append('is_purchased', isPurchased ? 'on' : '');
         urlEncodedData.append('is_installed', isInstalled ? 'on' : '');
 

@@ -83,30 +83,37 @@ app.get("/", (req, res) => {
       // Calculate progress
       const totalItems = rows.length;
       const completedItems = rows.filter(
-        (todo) => todo.is_purchased && todo.is_installed
+        (todo) => todo.is_purchased && todo.is_installed,
       ).length;
       const progressPercentage =
         totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
+
+      // Calculate total cost for items not yet purchased (buy = false)
+      const totalCostNotPurchased = rows
+        .filter((todo) => !todo.is_purchased)
+        .reduce((sum, todo) => sum + (parseFloat(todo.cost) || 0), 0);
 
       res.render("index", {
         todos: todosWithFormattedDates,
         totalItems,
         completedItems,
         progressPercentage,
+        totalCostNotPurchased,
       });
-    }
+    },
   );
 });
 
 // Create todo
 app.post("/add", (req, res) => {
-  const { name, notes } = req.body;
+  const { name, notes, cost } = req.body;
+  const parsedCost = parseFloat(cost) || 0;
   db.run(
-    "INSERT INTO todos (name, notes) VALUES (?, ?)",
-    [name, notes],
+    "INSERT INTO todos (name, notes, cost) VALUES (?, ?, ?)",
+    [name, notes, parsedCost],
     (err) => {
       res.redirect("/");
-    }
+    },
   );
 });
 
@@ -120,6 +127,7 @@ app.post("/update/:id", (req, res) => {
     notes,
     is_purchased,
     is_installed,
+    cost,
   } = req.body;
 
   // Parse and validate dates
@@ -137,10 +145,11 @@ app.post("/update/:id", (req, res) => {
   // Convert checkbox values to boolean (checkboxes send "on" when checked, undefined when unchecked)
   const isPurchased = is_purchased === "on" ? 1 : 0;
   const isInstalled = is_installed === "on" ? 1 : 0;
+  const parsedCost = parseFloat(cost) || 0;
 
   // Update all fields including checkboxes
   db.run(
-    `UPDATE todos SET name=?, purchased_on=?, installed_on=?, notes=?, is_purchased=?, is_installed=? WHERE id=?`,
+    `UPDATE todos SET name=?, purchased_on=?, installed_on=?, notes=?, is_purchased=?, is_installed=?, cost=? WHERE id=?`,
     [
       name,
       parsedPurchasedOn,
@@ -148,6 +157,7 @@ app.post("/update/:id", (req, res) => {
       notes,
       isPurchased,
       isInstalled,
+      parsedCost,
       id,
     ],
     (err) => {
@@ -157,7 +167,7 @@ app.post("/update/:id", (req, res) => {
       }
       // Return JSON success response instead of redirecting
       res.json({ success: true });
-    }
+    },
   );
 });
 
@@ -169,5 +179,5 @@ app.post("/delete/:id", (req, res) => {
 });
 
 app.listen(PORT, () =>
-  console.log(`Server running on http://localhost:${PORT}`)
+  console.log(`Server running on http://localhost:${PORT}`),
 );
