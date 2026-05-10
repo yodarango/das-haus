@@ -163,7 +163,19 @@ app.post("/update/:id", (req, res) => {
     (err) => {
       if (err) {
         console.error("Database error:", err);
-        return res.status(500).json({ error: "Database error" });
+        console.error("Failed values:", {
+          name,
+          parsedPurchasedOn,
+          parsedInstalledOn,
+          notes,
+          isPurchased,
+          isInstalled,
+          parsedCost,
+          id,
+        });
+        return res
+          .status(500)
+          .json({ error: "Database error", details: err.message });
       }
       // Return JSON success response instead of redirecting
       res.json({ success: true });
