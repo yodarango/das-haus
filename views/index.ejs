@@ -47,6 +47,11 @@
     <meta name="language" content="English" />
     <meta name="revisit-after" content="7 days" />
     <link rel="canonical" href="https://danielrangel.net/our-house/" />
+
+    <!-- Ionic Icons -->
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
     <style>
       * {
         margin: 0;
@@ -940,6 +945,10 @@
         gap: 0.5rem;
       }
 
+      .dropdown-button ion-icon {
+        font-size: 1.125rem;
+      }
+
       .dropdown-button:hover {
         background: rgba(30, 58, 138, 0.5);
         border-color: rgba(96, 165, 250, 0.5);
@@ -971,6 +980,13 @@
         border-radius: 0.5rem;
         transition: all 0.2s ease;
         font-size: 0.875rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .dropdown-item ion-icon {
+        font-size: 1rem;
       }
 
       .dropdown-item:hover {
@@ -999,6 +1015,11 @@
         justify-content: center;
       }
 
+      .sort-direction-toggle ion-icon {
+        font-size: 1.25rem;
+        transition: transform 0.3s ease;
+      }
+
       .sort-direction-toggle:hover {
         background: rgba(30, 58, 138, 0.5);
         border-color: rgba(96, 165, 250, 0.5);
@@ -1008,6 +1029,10 @@
         background: linear-gradient(135deg, rgba(59, 130, 246, 0.4) 0%, rgba(37, 99, 235, 0.4) 100%);
         border-color: rgba(96, 165, 250, 0.6);
         box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+      }
+
+      .sort-direction-toggle.active ion-icon {
+        transform: rotate(180deg);
       }
 
       .sort-tags {
@@ -1031,8 +1056,12 @@
         transition: all 0.3s ease;
         display: flex;
         align-items: center;
-        gap: 0.5rem;
+        gap: 0.375rem;
         box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+      }
+
+      .sort-tag ion-icon {
+        font-size: 0.875rem;
       }
 
       .sort-tag:hover {
@@ -1043,8 +1072,8 @@
       }
 
       .sort-tag .remove-icon {
-        font-size: 0.875rem;
         opacity: 0.7;
+        margin-left: 0.125rem;
       }
 
       .sort-tag:hover .remove-icon {
@@ -1213,17 +1242,27 @@
           <div class="sort-controls">
             <div class="sort-dropdown">
               <button class="dropdown-button" onclick="toggleDropdown()">
+                <ion-icon name="add-outline"></ion-icon>
                 <span>Add Filter</span>
-                <span>▼</span>
+                <ion-icon name="chevron-down-outline"></ion-icon>
               </button>
               <div class="dropdown-menu" id="sortDropdown">
-                <div class="dropdown-item" onclick="addSortTag('name')">Name</div>
-                <div class="dropdown-item" onclick="addSortTag('cost')">Cost</div>
-                <div class="dropdown-item" onclick="addSortTag('priority')">Priority</div>
+                <div class="dropdown-item" onclick="addSortTag('name')">
+                  <ion-icon name="text-outline"></ion-icon>
+                  <span>Name</span>
+                </div>
+                <div class="dropdown-item" onclick="addSortTag('cost')">
+                  <ion-icon name="cash-outline"></ion-icon>
+                  <span>Cost</span>
+                </div>
+                <div class="dropdown-item" onclick="addSortTag('priority')">
+                  <ion-icon name="flag-outline"></ion-icon>
+                  <span>Priority</span>
+                </div>
               </div>
             </div>
             <button class="sort-direction-toggle" onclick="toggleSortDirection()" id="sortDirection" title="Toggle sort direction">
-              ▲
+              <ion-icon name="arrow-up-outline"></ion-icon>
             </button>
           </div>
         </div>
@@ -1881,21 +1920,28 @@
           'cost': 'Cost',
           'priority': 'Priority'
         };
+        const filterIcons = {
+          'name': 'text-outline',
+          'cost': 'cash-outline',
+          'priority': 'flag-outline'
+        };
 
         if (sortFilters.length === 0) {
           container.innerHTML = '<div class="sort-tags-empty">No sorting applied</div>';
         } else {
           container.innerHTML = sortFilters.map(filter => `
             <div class="sort-tag" onclick="removeSortTag('${filter}')">
+              <ion-icon name="${filterIcons[filter]}"></ion-icon>
               <span>${filterLabels[filter]}</span>
-              <span class="remove-icon">✕</span>
+              <ion-icon name="close-outline" class="remove-icon"></ion-icon>
             </div>
           `).join('');
         }
 
         // Update dropdown items to show selected state
         document.querySelectorAll('.dropdown-item').forEach(item => {
-          const filterType = item.textContent.toLowerCase();
+          const filterText = item.querySelector('span').textContent.trim();
+          const filterType = filterText.toLowerCase();
           if (sortFilters.includes(filterType)) {
             item.classList.add('selected');
           } else {
@@ -1908,8 +1954,13 @@
       function toggleSortDirection() {
         sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
         const button = document.getElementById('sortDirection');
-        button.textContent = sortDirection === 'asc' ? '▲' : '▼';
-        button.classList.toggle('active');
+
+        if (sortDirection === 'asc') {
+          button.classList.remove('active');
+        } else {
+          button.classList.add('active');
+        }
+
         applySorting();
       }
 
