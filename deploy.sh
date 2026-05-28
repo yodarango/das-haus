@@ -32,12 +32,30 @@ fi
 # Copy the files to the VPS
 ssh_main "\
 cd /var/www/repos/danielrangel_net_das_haus/app; \
+echo '💾 Backing up production database...'; \
+if [ -f db/todos.db ]; then \
+  cp db/todos.db db/backup.db; \
+  echo '✅ Database backed up to db/backup.db'; \
+  mkdir -p /var/www/backups; \
+  cp db/todos.db /var/www/backups/todos_backup_\$(date +%Y%m%d_%H%M%S).db; \
+  echo '✅ Timestamped backup created in /var/www/backups/'; \
+else \
+  echo '⚠️  No database found to backup'; \
+fi; \
+git fetch origin; \
 git reset --hard origin/main; \
 git pull; \
-echo '👍 pulled changes from git and reset to origin'; \
+echo '👍 Pulled changes from git and reset to origin'; \
+if [ -f db/backup.db ]; then \
+  cp db/backup.db db/todos.db; \
+  echo '✅ Production database restored from backup'; \
+else \
+  echo '🔧 No backup found, initializing new database...'; \
+  docker compose run --rm our-house node db/initialize_production.js; \
+fi; \
 echo 'Current directory: '; pwd; \
 echo '🏗️ Building docker now...';\
-docker compose down
+docker compose down; \
 docker compose up -d --build; \
 echo '🚀🚀🚀 Deployment successful'"
 

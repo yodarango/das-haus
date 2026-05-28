@@ -1,11 +1,16 @@
 # Sync script
 sync_db.sh
 
-# Database files - DO NOT COMMIT
+# Database files - DO NOT COMMIT PRODUCTION DATA
 db/todos.db
+db/backup.db
 db/todos.db-journal
+db/*.db
+db/*.db-journal
 *.db
 *.db-journal
+*.db.backup.*
+backups/
 
 # Node modules
 node_modules/

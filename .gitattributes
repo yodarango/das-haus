@@ -1,0 +1,4 @@
+# Prevent database files from being merged
+db/todos.db merge=ours
+db/backup.db merge=ours
+*.db merge=ours

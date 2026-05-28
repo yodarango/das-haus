@@ -1259,6 +1259,10 @@
                   <ion-icon name="flag-outline"></ion-icon>
                   <span>Priority</span>
                 </div>
+                <div class="dropdown-item" onclick="addSortTag('completion')">
+                  <ion-icon name="checkmark-done-outline"></ion-icon>
+                  <span>Completion</span>
+                </div>
               </div>
             </div>
             <button class="sort-direction-toggle" onclick="toggleSortDirection()" id="sortDirection" title="Toggle sort direction">
@@ -1353,6 +1357,7 @@
           data-cost="<%= todo.cost || 0 %>"
           data-priority="<%= todo.priority || 0 %>"
           data-name="<%= todo.name.toLowerCase() %>"
+          data-completion="<%= (todo.is_purchased && todo.is_installed) ? 2 : (todo.is_purchased || todo.is_installed) ? 1 : 0 %>"
         >
           <div class="card-header">
             <div class="card-left">
@@ -1926,12 +1931,14 @@
         const filterLabels = {
           'name': 'Name',
           'cost': 'Cost',
-          'priority': 'Priority'
+          'priority': 'Priority',
+          'completion': 'Completion'
         };
         const filterIcons = {
           'name': 'text-outline',
           'cost': 'cash-outline',
-          'priority': 'flag-outline'
+          'priority': 'flag-outline',
+          'completion': 'checkmark-done-outline'
         };
 
         if (sortFilters.length === 0) {
@@ -2002,6 +2009,12 @@
               case 'priority':
                 aValue = parseInt(a.dataset.priority) || 0;
                 bValue = parseInt(b.dataset.priority) || 0;
+                comparison = aValue - bValue;
+                break;
+
+              case 'completion':
+                aValue = parseInt(a.dataset.completion) || 0;
+                bValue = parseInt(b.dataset.completion) || 0;
                 comparison = aValue - bValue;
                 break;
 
