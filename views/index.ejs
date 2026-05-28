@@ -636,27 +636,31 @@
       }
 
       /* Priority dots styles */
+      .priority-dots-row {
+        display: flex;
+        justify-content: flex-end;
+        padding: 0.5rem 1rem 0 1rem;
+      }
+
       .priority-dots {
         display: flex;
         gap: 0.25rem;
         align-items: center;
         justify-content: center;
-        padding: 0.5rem 0 0 0;
-        border-top: 1px solid rgba(96, 165, 250, 0.15);
-        margin-top: 0.75rem;
+        flex-shrink: 0;
       }
 
       .priority-dot {
-        width: 8px;
-        height: 8px;
+        width: 6px;
+        height: 6px;
         border-radius: 50%;
-        background: rgba(96, 165, 250, 0.3);
+        background: rgba(96, 165, 250, 0.2);
         transition: all 0.3s ease;
       }
 
       .priority-dot.filled {
         background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
-        box-shadow: 0 0 8px rgba(96, 165, 250, 0.5);
+        box-shadow: 0 0 6px rgba(96, 165, 250, 0.4);
       }
 
       /* Priority selector in edit form */
@@ -888,6 +892,172 @@
         display: none;
       }
 
+      /* Sort options styling */
+      .sort-container {
+        max-width: 600px;
+        margin: 1rem auto 2rem;
+        padding: 0 1rem;
+      }
+
+      .sort-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.75rem;
+      }
+
+      .sort-label {
+        font-size: 0.75rem;
+        color: #93c5fd;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 600;
+      }
+
+      .sort-controls {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+      }
+
+      .sort-dropdown {
+        position: relative;
+      }
+
+      .dropdown-button {
+        background: rgba(30, 58, 138, 0.3);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(96, 165, 250, 0.3);
+        color: rgba(226, 232, 240, 0.9);
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .dropdown-button:hover {
+        background: rgba(30, 58, 138, 0.5);
+        border-color: rgba(96, 165, 250, 0.5);
+      }
+
+      .dropdown-menu {
+        position: absolute;
+        top: calc(100% + 0.5rem);
+        left: 0;
+        background: rgba(15, 23, 42, 0.95);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(96, 165, 250, 0.3);
+        border-radius: 0.75rem;
+        padding: 0.5rem;
+        min-width: 150px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        z-index: 100;
+        display: none;
+      }
+
+      .dropdown-menu.active {
+        display: block;
+      }
+
+      .dropdown-item {
+        padding: 0.5rem 0.75rem;
+        color: rgba(226, 232, 240, 0.9);
+        cursor: pointer;
+        border-radius: 0.5rem;
+        transition: all 0.2s ease;
+        font-size: 0.875rem;
+      }
+
+      .dropdown-item:hover {
+        background: rgba(59, 130, 246, 0.3);
+      }
+
+      .dropdown-item.selected {
+        background: rgba(59, 130, 246, 0.2);
+        color: #60a5fa;
+      }
+
+      .sort-direction-toggle {
+        background: rgba(30, 58, 138, 0.3);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(96, 165, 250, 0.3);
+        color: rgba(226, 232, 240, 0.9);
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        min-width: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .sort-direction-toggle:hover {
+        background: rgba(30, 58, 138, 0.5);
+        border-color: rgba(96, 165, 250, 0.5);
+      }
+
+      .sort-direction-toggle.active {
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.4) 0%, rgba(37, 99, 235, 0.4) 100%);
+        border-color: rgba(96, 165, 250, 0.6);
+        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+      }
+
+      .sort-tags {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-top: 0.5rem;
+        min-height: 32px;
+      }
+
+      .sort-tag {
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.4) 0%, rgba(37, 99, 235, 0.4) 100%);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(96, 165, 250, 0.6);
+        color: #e2e8f0;
+        padding: 0.375rem 0.75rem;
+        border-radius: 1rem;
+        font-size: 0.75rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+      }
+
+      .sort-tag:hover {
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.5) 0%, rgba(37, 99, 235, 0.5) 100%);
+        border-color: rgba(96, 165, 250, 0.8);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+      }
+
+      .sort-tag .remove-icon {
+        font-size: 0.875rem;
+        opacity: 0.7;
+      }
+
+      .sort-tag:hover .remove-icon {
+        opacity: 1;
+      }
+
+      .sort-tags-empty {
+        color: rgba(226, 232, 240, 0.4);
+        font-size: 0.75rem;
+        font-style: italic;
+        padding: 0.5rem 0;
+      }
+
       /* Add button styling */
       .add-button {
         position: fixed;
@@ -1036,6 +1206,32 @@
         </div>
       </div>
 
+      <!-- Sort Options -->
+      <div class="sort-container">
+        <div class="sort-header">
+          <span class="sort-label">Sort by</span>
+          <div class="sort-controls">
+            <div class="sort-dropdown">
+              <button class="dropdown-button" onclick="toggleDropdown()">
+                <span>Add Filter</span>
+                <span>▼</span>
+              </button>
+              <div class="dropdown-menu" id="sortDropdown">
+                <div class="dropdown-item" onclick="addSortTag('name')">Name</div>
+                <div class="dropdown-item" onclick="addSortTag('cost')">Cost</div>
+                <div class="dropdown-item" onclick="addSortTag('priority')">Priority</div>
+              </div>
+            </div>
+            <button class="sort-direction-toggle" onclick="toggleSortDirection()" id="sortDirection" title="Toggle sort direction">
+              ▲
+            </button>
+          </div>
+        </div>
+        <div class="sort-tags" id="sortTags">
+          <!-- Sort tags will be added here dynamically -->
+        </div>
+      </div>
+
       <!-- Add Button -->
       <button
         class="add-button"
@@ -1111,6 +1307,9 @@
           class="todo-card <%= (todo.is_purchased && todo.is_installed) ? 'completed' : '' %>"
           id="card-<%= todo.id %>"
           data-notes-html="<%= todo.notes_html.replace(/"/g, '&quot;') %>"
+          data-cost="<%= todo.cost || 0 %>"
+          data-priority="<%= todo.priority || 0 %>"
+          data-name="<%= todo.name.toLowerCase() %>"
         >
           <div class="card-header">
             <div class="card-left">
@@ -1163,17 +1362,21 @@
             </div>
           </div>
 
+          <!-- Priority Dots Row -->
+          <% if (todo.priority && todo.priority > 0) { %>
+          <div class="priority-dots-row">
+            <div class="priority-dots">
+              <% for (let i = 1; i <= 5; i++) { %>
+                <div class="priority-dot <%= todo.priority >= i ? 'filled' : '' %>"></div>
+              <% } %>
+            </div>
+          </div>
+          <% } %>
+
           <!-- Notes Display -->
           <% if (todo.notes && todo.notes.trim() !== '') { %>
           <div class="card-notes"><%- todo.notes_html %></div>
           <% } %>
-
-          <!-- Priority Dots -->
-          <div class="priority-dots">
-            <% for (let i = 1; i <= 5; i++) { %>
-              <div class="priority-dot <%= (todo.priority || 1) >= i ? 'filled' : '' %>"></div>
-            <% } %>
-          </div>
 
           <!-- Edit Mode -->
           <div
@@ -1624,6 +1827,149 @@
         // Focus back on search input
         searchInput.focus();
       }
+
+      // Sort filter state
+      let sortFilters = [];
+      let sortDirection = 'asc'; // 'asc' or 'desc'
+
+      // Toggle dropdown
+      function toggleDropdown() {
+        const dropdown = document.getElementById('sortDropdown');
+        dropdown.classList.toggle('active');
+      }
+
+      // Close dropdown when clicking outside
+      document.addEventListener('click', function(event) {
+        const dropdown = document.querySelector('.sort-dropdown');
+        if (dropdown && !dropdown.contains(event.target)) {
+          document.getElementById('sortDropdown').classList.remove('active');
+        }
+      });
+
+      // Add sort tag
+      function addSortTag(filterType) {
+        // Check if filter already exists
+        if (sortFilters.includes(filterType)) {
+          return;
+        }
+
+        // Add to filters array
+        sortFilters.push(filterType);
+
+        // Update UI
+        renderSortTags();
+
+        // Close dropdown
+        document.getElementById('sortDropdown').classList.remove('active');
+
+        // Apply sorting
+        applySorting();
+      }
+
+      // Remove sort tag
+      function removeSortTag(filterType) {
+        sortFilters = sortFilters.filter(f => f !== filterType);
+        renderSortTags();
+        applySorting();
+      }
+
+      // Render sort tags
+      function renderSortTags() {
+        const container = document.getElementById('sortTags');
+        const filterLabels = {
+          'name': 'Name',
+          'cost': 'Cost',
+          'priority': 'Priority'
+        };
+
+        if (sortFilters.length === 0) {
+          container.innerHTML = '<div class="sort-tags-empty">No sorting applied</div>';
+        } else {
+          container.innerHTML = sortFilters.map(filter => `
+            <div class="sort-tag" onclick="removeSortTag('${filter}')">
+              <span>${filterLabels[filter]}</span>
+              <span class="remove-icon">✕</span>
+            </div>
+          `).join('');
+        }
+
+        // Update dropdown items to show selected state
+        document.querySelectorAll('.dropdown-item').forEach(item => {
+          const filterType = item.textContent.toLowerCase();
+          if (sortFilters.includes(filterType)) {
+            item.classList.add('selected');
+          } else {
+            item.classList.remove('selected');
+          }
+        });
+      }
+
+      // Toggle sort direction
+      function toggleSortDirection() {
+        sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+        const button = document.getElementById('sortDirection');
+        button.textContent = sortDirection === 'asc' ? '▲' : '▼';
+        button.classList.toggle('active');
+        applySorting();
+      }
+
+      // Apply sorting based on active filters
+      function applySorting() {
+        if (sortFilters.length === 0) {
+          return;
+        }
+
+        const container = document.querySelector(".card-container");
+        const cards = Array.from(container.querySelectorAll(".todo-card"));
+
+        // Sort cards based on multiple criteria
+        cards.sort((a, b) => {
+          for (let filter of sortFilters) {
+            let aValue, bValue, comparison;
+
+            switch(filter) {
+              case 'name':
+                aValue = a.dataset.name || "";
+                bValue = b.dataset.name || "";
+                comparison = aValue.localeCompare(bValue);
+                break;
+
+              case 'cost':
+                aValue = parseFloat(a.dataset.cost) || 0;
+                bValue = parseFloat(b.dataset.cost) || 0;
+                comparison = aValue - bValue;
+                break;
+
+              case 'priority':
+                aValue = parseInt(a.dataset.priority) || 0;
+                bValue = parseInt(b.dataset.priority) || 0;
+                comparison = aValue - bValue;
+                break;
+
+              default:
+                comparison = 0;
+            }
+
+            // If values are different, return the comparison
+            if (comparison !== 0) {
+              return sortDirection === 'asc' ? comparison : -comparison;
+            }
+            // If equal, continue to next filter
+          }
+
+          return 0;
+        });
+
+        // Reorder cards in DOM
+        cards.forEach(card => {
+          container.appendChild(card);
+        });
+      }
+
+      // Initialize empty state on page load
+      document.addEventListener('DOMContentLoaded', function() {
+        renderSortTags();
+      });
     </script>
   </body>
 </html>
