@@ -108,7 +108,7 @@ app.get("/", (req, res) => {
 app.post("/add", (req, res) => {
   const { name, notes, cost, priority } = req.body;
   const parsedCost = parseFloat(cost) || 0;
-  const parsedPriority = parseInt(priority) || 1;
+  const parsedPriority = parseInt(priority) || 0;
   db.run(
     "INSERT INTO todos (name, notes, cost, priority) VALUES (?, ?, ?, ?)",
     [name, notes, parsedCost, parsedPriority],
@@ -148,7 +148,7 @@ app.post("/update/:id", (req, res) => {
   const isPurchased = is_purchased === "on" ? 1 : 0;
   const isInstalled = is_installed === "on" ? 1 : 0;
   const parsedCost = parseFloat(cost) || 0;
-  const parsedPriority = parseInt(priority) || 1;
+  const parsedPriority = parseInt(priority) || 0;
 
   // Update all fields including checkboxes
   db.run(

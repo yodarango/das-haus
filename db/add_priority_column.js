@@ -3,7 +3,7 @@ const db = new sqlite3.Database("./db/todos.db");
 
 // Add priority column to todos table
 db.serialize(() => {
-  db.run(`ALTER TABLE todos ADD COLUMN priority INTEGER DEFAULT 1`, (err) => {
+  db.run(`ALTER TABLE todos ADD COLUMN priority INTEGER DEFAULT 0`, (err) => {
     if (err) {
       if (err.message.includes("duplicate column name")) {
         console.log("✓ Priority column already exists");

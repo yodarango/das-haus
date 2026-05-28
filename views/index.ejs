@@ -1314,7 +1314,11 @@
               <label class="edit-label">Priority</label>
               <div class="priority-selector">
                 <div class="priority-option">
-                  <input type="radio" name="priority" value="1" id="add-priority-1" checked>
+                  <input type="radio" name="priority" value="0" id="add-priority-0" checked>
+                  <label for="add-priority-0">None</label>
+                </div>
+                <div class="priority-option">
+                  <input type="radio" name="priority" value="1" id="add-priority-1">
                   <label for="add-priority-1">1</label>
                 </div>
                 <div class="priority-option">
@@ -1491,9 +1495,13 @@
               <div class="edit-field">
                 <label class="edit-label">Priority</label>
                 <div class="priority-selector">
+                  <div class="priority-option">
+                    <input type="radio" name="priority" value="0" id="priority-<%= todo.id %>-0" <%= (todo.priority || 0) === 0 ? 'checked' : '' %>>
+                    <label for="priority-<%= todo.id %>-0">None</label>
+                  </div>
                   <% for (let i = 1; i <= 5; i++) { %>
                   <div class="priority-option">
-                    <input type="radio" name="priority" value="<%= i %>" id="priority-<%= todo.id %>-<%= i %>" <%= (todo.priority || 1) === i ? 'checked' : '' %>>
+                    <input type="radio" name="priority" value="<%= i %>" id="priority-<%= todo.id %>-<%= i %>" <%= (todo.priority || 0) === i ? 'checked' : '' %>>
                     <label for="priority-<%= todo.id %>-<%= i %>"><%= i %></label>
                   </div>
                   <% } %>
