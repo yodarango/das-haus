@@ -10,7 +10,8 @@ db.serialize(() => {
     purchased_on TEXT,
     installed_on TEXT,
     notes TEXT,
-    cost REAL DEFAULT 0
+    cost REAL DEFAULT 0,
+    priority INTEGER DEFAULT 1
   )`);
 });
 

@@ -106,11 +106,12 @@ app.get("/", (req, res) => {
 
 // Create todo
 app.post("/add", (req, res) => {
-  const { name, notes, cost } = req.body;
+  const { name, notes, cost, priority } = req.body;
   const parsedCost = parseFloat(cost) || 0;
+  const parsedPriority = parseInt(priority) || 1;
   db.run(
-    "INSERT INTO todos (name, notes, cost) VALUES (?, ?, ?)",
-    [name, notes, parsedCost],
+    "INSERT INTO todos (name, notes, cost, priority) VALUES (?, ?, ?, ?)",
+    [name, notes, parsedCost, parsedPriority],
     (err) => {
       res.redirect("/");
     },
@@ -128,6 +129,7 @@ app.post("/update/:id", (req, res) => {
     is_purchased,
     is_installed,
     cost,
+    priority,
   } = req.body;
 
   // Parse and validate dates
@@ -146,10 +148,11 @@ app.post("/update/:id", (req, res) => {
   const isPurchased = is_purchased === "on" ? 1 : 0;
   const isInstalled = is_installed === "on" ? 1 : 0;
   const parsedCost = parseFloat(cost) || 0;
+  const parsedPriority = parseInt(priority) || 1;
 
   // Update all fields including checkboxes
   db.run(
-    `UPDATE todos SET name=?, purchased_on=?, installed_on=?, notes=?, is_purchased=?, is_installed=?, cost=? WHERE id=?`,
+    `UPDATE todos SET name=?, purchased_on=?, installed_on=?, notes=?, is_purchased=?, is_installed=?, cost=?, priority=? WHERE id=?`,
     [
       name,
       parsedPurchasedOn,
@@ -158,6 +161,7 @@ app.post("/update/:id", (req, res) => {
       isPurchased,
       isInstalled,
       parsedCost,
+      parsedPriority,
       id,
     ],
     (err) => {
@@ -171,6 +175,7 @@ app.post("/update/:id", (req, res) => {
           isPurchased,
           isInstalled,
           parsedCost,
+          parsedPriority,
           id,
         });
         return res

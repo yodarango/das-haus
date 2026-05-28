@@ -635,6 +635,77 @@
         flex: 1;
       }
 
+      /* Priority dots styles */
+      .priority-dots {
+        display: flex;
+        gap: 0.25rem;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5rem 0 0 0;
+        border-top: 1px solid rgba(96, 165, 250, 0.15);
+        margin-top: 0.75rem;
+      }
+
+      .priority-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: rgba(96, 165, 250, 0.3);
+        transition: all 0.3s ease;
+      }
+
+      .priority-dot.filled {
+        background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+        box-shadow: 0 0 8px rgba(96, 165, 250, 0.5);
+      }
+
+      /* Priority selector in edit form */
+      .priority-selector {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 0.5rem;
+        background: rgba(15, 23, 42, 0.3);
+        border-radius: 0.5rem;
+      }
+
+      .priority-option {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.25rem;
+        cursor: pointer;
+      }
+
+      .priority-option input[type="radio"] {
+        appearance: none;
+        -webkit-appearance: none;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        border: 2px solid rgba(96, 165, 250, 0.3);
+        background: rgba(15, 23, 42, 0.5);
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .priority-option input[type="radio"]:checked {
+        background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+        border-color: rgba(96, 165, 250, 0.6);
+        box-shadow: 0 0 8px rgba(96, 165, 250, 0.5);
+      }
+
+      .priority-option input[type="radio"]:hover {
+        border-color: rgba(96, 165, 250, 0.5);
+      }
+
+      .priority-option label {
+        font-size: 0.75rem;
+        color: #93c5fd;
+        cursor: pointer;
+      }
+
       /* Edit mode styles */
       .card-edit-mode {
         margin-top: 1rem;
@@ -895,6 +966,18 @@
       .modal-form .glass-button {
         width: 100%;
       }
+
+      .modal-form .edit-field {
+        margin-bottom: 0;
+      }
+
+      .modal-form .edit-label {
+        display: block;
+        font-size: 0.875rem;
+        color: #93c5fd;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+      }
     </style>
   </head>
   <body>
@@ -992,6 +1075,31 @@
               class="glass-input"
               style="min-height: 80px; resize: vertical; font-family: inherit;"
             ></textarea>
+            <div class="edit-field">
+              <label class="edit-label">Priority</label>
+              <div class="priority-selector">
+                <div class="priority-option">
+                  <input type="radio" name="priority" value="1" id="add-priority-1" checked>
+                  <label for="add-priority-1">1</label>
+                </div>
+                <div class="priority-option">
+                  <input type="radio" name="priority" value="2" id="add-priority-2">
+                  <label for="add-priority-2">2</label>
+                </div>
+                <div class="priority-option">
+                  <input type="radio" name="priority" value="3" id="add-priority-3">
+                  <label for="add-priority-3">3</label>
+                </div>
+                <div class="priority-option">
+                  <input type="radio" name="priority" value="4" id="add-priority-4">
+                  <label for="add-priority-4">4</label>
+                </div>
+                <div class="priority-option">
+                  <input type="radio" name="priority" value="5" id="add-priority-5">
+                  <label for="add-priority-5">5</label>
+                </div>
+              </div>
+            </div>
             <button class="glass-button" type="submit">Add Item</button>
           </form>
         </div>
@@ -1059,6 +1167,13 @@
           <% if (todo.notes && todo.notes.trim() !== '') { %>
           <div class="card-notes"><%- todo.notes_html %></div>
           <% } %>
+
+          <!-- Priority Dots -->
+          <div class="priority-dots">
+            <% for (let i = 1; i <= 5; i++) { %>
+              <div class="priority-dot <%= (todo.priority || 1) >= i ? 'filled' : '' %>"></div>
+            <% } %>
+          </div>
 
           <!-- Edit Mode -->
           <div
@@ -1130,6 +1245,17 @@
                   style="width: 100%; min-height: 80px; resize: vertical; font-family: inherit;"
                   placeholder="**bold** *italic* [link](url)"
                 ><%= todo.notes || '' %></textarea>
+              </div>
+              <div class="edit-field">
+                <label class="edit-label">Priority</label>
+                <div class="priority-selector">
+                  <% for (let i = 1; i <= 5; i++) { %>
+                  <div class="priority-option">
+                    <input type="radio" name="priority" value="<%= i %>" id="priority-<%= todo.id %>-<%= i %>" <%= (todo.priority || 1) === i ? 'checked' : '' %>>
+                    <label for="priority-<%= todo.id %>-<%= i %>"><%= i %></label>
+                  </div>
+                  <% } %>
+                </div>
               </div>
               <div class="edit-actions">
                 <button
@@ -1337,6 +1463,7 @@
         ).value;
         const notes = editForm.querySelector('textarea[name="notes"]').value;
         const cost = editForm.querySelector('input[name="cost"]').value;
+        const priority = editForm.querySelector('input[name="priority"]:checked').value;
 
         // Get checkbox values from the visible checkboxes in the card header
         const purchasedCheckbox = card.querySelector('input[onchange*="is_purchased"]');
@@ -1365,6 +1492,7 @@
         formData.append('installed_on', installedOn);
         formData.append('notes', notes);
         formData.append('cost', cost);
+        formData.append('priority', priority);
 
         try {
           const response = await fetch(`/update/${id}`, {
@@ -1412,6 +1540,7 @@
         urlEncodedData.append('installed_on', formData.get('installed_on'));
         urlEncodedData.append('notes', formData.get('notes'));
         urlEncodedData.append('cost', formData.get('cost'));
+        urlEncodedData.append('priority', formData.get('priority'));
         urlEncodedData.append('is_purchased', isPurchased ? 'on' : '');
         urlEncodedData.append('is_installed', isInstalled ? 'on' : '');
 
