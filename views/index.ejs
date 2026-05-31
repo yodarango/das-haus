@@ -1087,6 +1087,33 @@
         padding: 0.5rem 0;
       }
 
+      .clear-filters-button {
+        background: rgba(239, 68, 68, 0.2);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(248, 113, 113, 0.3);
+        color: rgba(248, 113, 113, 0.9);
+        padding: 0.375rem 0.75rem;
+        border-radius: 1rem;
+        font-size: 0.75rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+      }
+
+      .clear-filters-button:hover {
+        background: rgba(239, 68, 68, 0.3);
+        border-color: rgba(248, 113, 113, 0.5);
+        color: rgba(248, 113, 113, 1);
+        transform: translateY(-1px);
+      }
+
+      .clear-filters-button ion-icon {
+        font-size: 0.875rem;
+      }
+
       /* Add button styling */
       .add-button {
         position: fixed;
@@ -1884,6 +1911,34 @@
       let sortFilters = [];
       let sortDirection = 'asc'; // 'asc' or 'desc'
 
+      // Load filters from session storage
+      function loadFiltersFromStorage() {
+        try {
+          const savedFilters = sessionStorage.getItem('sortFilters');
+          const savedDirection = sessionStorage.getItem('sortDirection');
+
+          if (savedFilters) {
+            sortFilters = JSON.parse(savedFilters);
+          }
+
+          if (savedDirection) {
+            sortDirection = savedDirection;
+          }
+        } catch (error) {
+          console.error('Error loading filters from storage:', error);
+        }
+      }
+
+      // Save filters to session storage
+      function saveFiltersToStorage() {
+        try {
+          sessionStorage.setItem('sortFilters', JSON.stringify(sortFilters));
+          sessionStorage.setItem('sortDirection', sortDirection);
+        } catch (error) {
+          console.error('Error saving filters to storage:', error);
+        }
+      }
+
       // Toggle dropdown
       function toggleDropdown() {
         const dropdown = document.getElementById('sortDropdown');
@@ -1908,6 +1963,9 @@
         // Add to filters array
         sortFilters.push(filterType);
 
+        // Save to storage
+        saveFiltersToStorage();
+
         // Update UI
         renderSortTags();
 
@@ -1921,8 +1979,34 @@
       // Remove sort tag
       function removeSortTag(filterType) {
         sortFilters = sortFilters.filter(f => f !== filterType);
+        saveFiltersToStorage();
         renderSortTags();
         applySorting();
+      }
+
+      // Clear all filters
+      function clearAllFilters() {
+        sortFilters = [];
+        sortDirection = 'asc';
+        saveFiltersToStorage();
+
+        // Reset direction button
+        const button = document.getElementById('sortDirection');
+        button.classList.remove('active');
+
+        renderSortTags();
+
+        // Reset to default order (by name ascending)
+        const container = document.querySelector(".card-container");
+        const cards = Array.from(container.querySelectorAll(".todo-card"));
+        cards.sort((a, b) => {
+          const aValue = a.dataset.name || "";
+          const bValue = b.dataset.name || "";
+          return aValue.localeCompare(bValue);
+        });
+        cards.forEach(card => {
+          container.appendChild(card);
+        });
       }
 
       // Render sort tags
@@ -1944,13 +2028,22 @@
         if (sortFilters.length === 0) {
           container.innerHTML = '<div class="sort-tags-empty">No sorting applied</div>';
         } else {
-          container.innerHTML = sortFilters.map(filter => `
+          const tagsHTML = sortFilters.map(filter => `
             <div class="sort-tag" onclick="removeSortTag('${filter}')">
               <ion-icon name="${filterIcons[filter]}"></ion-icon>
               <span>${filterLabels[filter]}</span>
               <ion-icon name="close-outline" class="remove-icon"></ion-icon>
             </div>
           `).join('');
+
+          const clearButton = `
+            <button class="clear-filters-button" onclick="clearAllFilters()" title="Clear all filters">
+              <ion-icon name="trash-outline"></ion-icon>
+              <span>Clear All</span>
+            </button>
+          `;
+
+          container.innerHTML = tagsHTML + clearButton;
         }
 
         // Update dropdown items to show selected state
@@ -1976,6 +2069,7 @@
           button.classList.add('active');
         }
 
+        saveFiltersToStorage();
         applySorting();
       }
 
@@ -2038,9 +2132,26 @@
         });
       }
 
-      // Initialize empty state on page load
+      // Initialize filters on page load
       document.addEventListener('DOMContentLoaded', function() {
+        // Load saved filters from session storage
+        loadFiltersFromStorage();
+
+        // Update direction button UI
+        const button = document.getElementById('sortDirection');
+        if (sortDirection === 'desc') {
+          button.classList.add('active');
+        } else {
+          button.classList.remove('active');
+        }
+
+        // Render saved tags
         renderSortTags();
+
+        // Apply saved sorting
+        if (sortFilters.length > 0) {
+          applySorting();
+        }
       });
     </script>
   </body>
